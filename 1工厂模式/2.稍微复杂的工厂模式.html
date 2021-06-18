@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body></body>
+<script>
+  function Person (name) {
+    this.name = name
+  }
+  Person.prototype.getName = function () {
+    console.log(`Name is ${this.name}`)
+  }
+
+  function Car (model) {
+    this.model = model
+  }
+  Car.prototype.getModel = function () {
+    console.log(`Model is ${this.model}`)
+  }
+
+  function create (type, param) {
+    if (this instanceof create) { // instanceof 会判断后面的构造函数的原型 是不是存在于前面函数的原型链里
+      return new this[type](param)
+    } else {
+      return new create(type, param)
+    }
+  }
+
+  create.prototype = {
+    car: Car,
+    person: Person
+  }
+
+  let p1 = new create('person','person1')
+  p1.getName()
+  console.log(p1)
+  let c1 = create('car', 'Benz')
+  c1.getModel()
+
+  /* 
+    new create('person','person1') -> 
+      __proto__: create.prototype
+      new this[type](param) -> new this[person]('person1') -> new Person('person1')
+      -> {
+        __proto__: Person.prototype => {
+          getName
+        }
+        name: 'person1'
+      } 
+  */
+
+</script>
+</html>

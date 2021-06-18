@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  组合模式作用于 将多个部分通过一个组合变成一个整体
+  <!-- <form action="xxx" method="get">
+    <div class="form-line">
+      <label for="user">用户名</label>
+      <input type="text" id="user" name="user">
+    </div>
+    <div class="form-line">
+      <label for="psd">密码</label>
+      <input type="password" id="psd" name="psd">
+    </div>
+    <div class="form-line">
+      <input type="submit" value="登录">
+    </div>
+  </form> -->
+</body>
+<script>
+  function inheritPrototype(subClass, superClass) {
+    function Fn(){}
+    Fn.prototype = superClass.prototype
+    subClass.prototype = new Fn()
+    subClass.prototype.constructor = subClass
+  }
+  function Container () {
+    this.children = []
+    this.element = null
+  }
+  Container.prototype = {
+    init: function () {
+      throw new Error('请重写')
+    },
+    add: function(child) {
+      this.children.push(child)
+      this.element.appendChild(child.element)
+      return this
+    }
+  }
+  function CreateForm(id, method, action, parent) { // 基于容器基类创建表单容器
+    Container.call(this)
+    this.id = id
+    this.method = method
+    this.action = action
+    this.parent = parent
+    this.init()
+  }
+  inheritPrototype(CreateForm, Container)
+  CreateForm.prototype.init = function () {
+    this.element = document.createElement('form')
+    this.element.id = this.id
+    this.element.method = this.method
+    this.element.action = this.action
+  }
+  CreateForm.prototype.show = function () {
+    this.parent.appendChild(this.element)
+  }
+  function CreateLine(className) {// 行容器组件
+    Container.call(this)
+    this.className = className == null ? 'form-line': 'form-line' + className
+    this.init()
+  }
+  inheritPrototype(CreateLine, Container)
+  CreateLine.prototype.init = function () {
+    this.element = document.createElement('div')
+    this.element.className = this.className
+  }
+  
+
+  function CreateLabel(text, formName) {// label容器组件
+    Container.call(this)
+    this.text = text || ''
+    this.formName = formName || ''
+    this.init()
+  }
+  CreateLabel.prototype.init = function () {
+    this.element = document.createElement('label')
+    this.element.setAttribute('for', this.formName)
+    this.element.innerHTML = this.text
+  }
+  
+  function CreateInput(type, id, name, value) { // input
+    Container.call(this)
+    this.type = type || 'text'
+    this.id = id || ''
+    this.name = name || ''
+    this.value = value || ''
+    this.init()
+  }
+  CreateInput.prototype.init = function () {
+    this.element = document.createElement('input')
+    this.element.type = this.type
+    this.element.id = this.id
+    this.element.name = this.name
+    this.element.value = this.value
+  }
+  
+  var form = new CreateForm('FORM', 'get', 'www.baidu.com',  document.body)
+  var userline = 
+    new CreateLine()
+    .add(new CreateLabel('用户名', 'user'))
+    .add(new CreateInput('text', 'user', 'user'))
+  var psdline = 
+    new CreateLine()
+    .add(new CreateLabel('密码', 'psd'))
+    .add(new CreateInput('password', 'psd', 'psd'))
+  var submitline = 
+    new CreateLine()      
+    .add(new CreateInput('submit', '', '', '登录'))
+  form.add(userline).add(psdline).add(submitline).show()
+</script>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  当多个对象需要处理同一个请求时 可以将这些请求交由另一个对象处理
+  <ul>
+    <li>aaa</li>
+    <li>bbb</li>
+    <li>ccc</li>
+    <li>ddd</li>
+  </ul>
+</body>
+<script>
+  let lis = document.getElementsByTagName('li')
+  // 原始 
+  // for(var i = 0; i < lis.length; i ++ ) {
+  //   lis[i].onclick = function () {
+  //     console.log(i)
+  //   }
+  // }
+
+  // let 
+  // for(let i = 0; i < lis.length; i ++ ) {
+  //   lis[i].onclick = function () {
+  //     console.log(i)
+  //   }
+  // }
+
+  // 闭包
+  for(var i = 0; i < lis.length; i ++ ) {
+    ((i) => {
+      lis[i].onclick = function () {
+        console.log(i)
+      }
+    })(i)
+  }
+  // 需要每个li上绑定不同的事件 会造成性能的损失和调用
+  // 比如 我新增一个 他就点不了了
+  var oUl = document.querySelector('ul')
+  var oli = document.createElement('li')
+  oli.innerHTML = 'addddd'
+  oUl.appendChild(oli) 
+  oli.onclick = function () {
+  }
+  // 哎 他就失效了 请看下面表演
+  
+  // 事件委托
+  var oUl = document.querySelector('ul')
+  console.log(oUl)
+  oUl.onclick = function (e) {
+    let ev = e || event,
+        target = ev.target || ev.srcElement;
+    if (target.nodeName.toLowerCase() == 'li') {
+      console.log(target, target.innerHTML)
+    }
+  }
+</script>
+</html>

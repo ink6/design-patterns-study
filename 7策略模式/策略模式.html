@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text">
+  相对简单 主要用于有多种状态或者策略需要进行选择的时候，将所有的选择封装在一起 只给外部暴露出必要的接口
+</body>
+<script>
+  var formStrategy = (function () {
+    var strategy = {
+      notEmpty: function (value) {
+        return value.length? '': '请输入内容'
+      },
+      isNumber: function (value) {
+        let reg = /^[0-9]+(\.[0-9]+)?$/
+        return reg.test(value)? '': '请输入一个数字'
+      },
+      isPhone: function (value) {
+        //010 - 88888888 2222-7777777
+        let reg = /^\d{3}\-\d{8}$|^\d{4}\-\d{7}$/
+        return reg.test(value)? '': '请输入一个电话号码'
+      },
+    }
+    return {
+      validate: function(type, value) {
+        value = value.trim()
+        return strategy[type]? strategy[type](value): '没有这个方法，请手动添加'
+      },
+      addStrategy: function(type, fn) {
+        if (strategy[type]) return '这个方法已经存在'
+        strategy[type] = fn
+      }
+    }
+  })()
+  let input = document.querySelector('input')
+  formStrategy.addStrategy('isEnglish', function (value) {
+    let reg = /^[a-zA-Z]+$/
+    return reg.test(value)? '': '请输入英文'
+  })
+  input.onblur = function() {
+    // let result = formStrategy.validate('notEmpty', input.value)
+    //   || formStrategy.validate('isNumber', input.value)
+    //   || 'please add'
+    // console.log(result)
+
+    //使用新增的isEnglish
+    let result = formStrategy.validate('notEmpty', input.value)
+      || formStrategy.validate('isEnglish', input.value)
+      || 'good'
+    console.log(result)
+  }
+</script>
+</html>

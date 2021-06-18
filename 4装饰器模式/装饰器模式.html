@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body> 
+  装饰器模式 希望在不改变源对象的基础上 通过对其拓展功能和属性来实现更复杂的逻辑
+</body>
+<script>
+  function Car() {
+    this.price = 10
+  }
+  function cartWithAutoMirror (carClass) {
+    carClass.autoMirror = true
+    carClass.price += 20
+  }
+  function cartWithHeatSeat (carClass) {
+    carClass.heatSeat = true
+    carClass.price += 20
+  }
+  var car = new Car()
+  console.log(car)
+  cartWithAutoMirror(car)
+  cartWithHeatSeat(car)
+  console.log(car)
+</script>
+</html>
